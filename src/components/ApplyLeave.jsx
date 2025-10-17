@@ -357,7 +357,7 @@ const ApplyLeave = ({
                         />
                       </svg>
                       <span className="text-sm text-gray-600">
-                        {formData.attachments?.name || 'File selected'}
+                        {formData.attachments?.name || "File selected"}
                       </span>
                     </div>
                   ) : (
