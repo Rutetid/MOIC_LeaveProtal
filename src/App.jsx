@@ -18,8 +18,8 @@ const App = () => {
   const [formData, setFormData] = useState({
     leaveType: "",
     subject: "",
-    fromDate: "",
-    toDate: "",
+    fromDate: null,
+    toDate: null,
     numberOfDays: "",
     attachments: null,
   });
@@ -158,9 +158,10 @@ const App = () => {
   };
 
   const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
     setFormData((prev) => ({
       ...prev,
-      attachments: e.target.files[0],
+      attachments: file || null,
     }));
   };
 
