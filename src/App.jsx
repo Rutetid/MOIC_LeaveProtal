@@ -259,7 +259,7 @@ const App = () => {
         ) : (
           <>
             <Navbar handleLogout={handleLogout} userRole={userRole} />
-            <div className="py-12 px-4 sm:px-6 lg:px-8 pt-32">
+            <div className="py-12 px-4 sm:px-6 lg:px-8 pt-28 mt-1">
               <div className="max-w-7xl mx-auto">
                 <Routes>
                   {/* User Routes */}

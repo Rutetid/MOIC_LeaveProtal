@@ -114,8 +114,8 @@ const ApplyLeave = ({
 
       {/* Main Form Area */}
       <div className="lg:col-span-2">
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="bg-gray-900 p-6">
+        <div className="bg-white rounded-sm border border-gray-200 shadow-sm overflow-hidden">
+          <div className="bg-gradient-to-r from-black/80 to-black/90 p-6">
             <div className="flex items-center text-white">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-4">
                 <svg
@@ -165,7 +165,7 @@ const ApplyLeave = ({
                 value={formData.leaveType}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 appearance-none cursor-pointer"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg  focus:border-transparent transition-all duration-200 bg-white text-gray-900 appearance-none cursor-pointer"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
                   backgroundPosition: "right 0.5rem center",
@@ -208,7 +208,7 @@ const ApplyLeave = ({
                 onChange={handleInputChange}
                 required
                 placeholder="Brief reason for leave"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg  focus:border-transparent transition-all duration-200"
               />
             </div>
 
@@ -241,7 +241,7 @@ const ApplyLeave = ({
                   dateFormat="dd/MM/yy"
                   onKeyDown={(e) => e.preventDefault()}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg  focus:border-transparent transition-all duration-200 cursor-pointer"
                   placeholderText="Select start date"
                 />
               </div>
@@ -273,7 +273,7 @@ const ApplyLeave = ({
                   onKeyDown={(e) => e.preventDefault()}
                   required
                   minDate={formData.fromDate}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 cursor-pointer"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg  focus:border-transparent transition-all duration-200 cursor-pointer"
                   placeholderText="Select end date"
                 />
               </div>
@@ -306,7 +306,7 @@ const ApplyLeave = ({
                 min="0.5"
                 required
                 placeholder="Enter number of days (e.g., 0.5 for half day)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg  focus:border-transparent transition-all duration-200"
               />
             </div>
 
@@ -339,7 +339,7 @@ const ApplyLeave = ({
                 />
                 <label
                   htmlFor="file-upload"
-                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
+                  className="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200"
                 >
                   {formData.attachments ? (
                     <div className="flex items-center space-x-2">
@@ -363,7 +363,7 @@ const ApplyLeave = ({
                   ) : (
                     <>
                       <svg
-                        className="w-10 h-10 mb-3 text-gray-400"
+                        className="w-8 h-8 mb-3 text-gray-400"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -393,7 +393,7 @@ const ApplyLeave = ({
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gray-900 text-white font-semibold py-4 px-6 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 flex items-center justify-center group"
+              className="w-full bg-gradient-to-r from-black/80 to-black/90 text-white font-semibold py-4 px-6 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-200 flex items-center justify-center group"
             >
               Submit Application
               <svg
