@@ -12,7 +12,10 @@ const Navbar = ({ handleLogout, userRole, isLoginPage = false }) => {
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo and Title */}
-          <div className="flex items-center space-x-4">
+          <div
+            className="flex items-center space-x-4 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => navigate("/")}
+          >
             <div className="flex items-center">
               <svg
                 className="w-10 h-10 text-white"
@@ -83,7 +86,9 @@ const Navbar = ({ handleLogout, userRole, isLoginPage = false }) => {
                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    MOIC Portal
+                    {userRole === "moic"
+                      ? "MOIC Portal"
+                      : "Civil Surgeon Portal"}
                   </button>
                 ) : (
                   <>
@@ -159,7 +164,10 @@ const Navbar = ({ handleLogout, userRole, isLoginPage = false }) => {
             )}
             {isLoginPage && (
               <div className="flex space-x-2">
-                <button className="px-6 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 text-white hover:bg-white hover:bg-opacity-20 hover:text-black">
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-6 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 text-white hover:bg-white hover:bg-opacity-20 hover:text-black"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -175,7 +183,10 @@ const Navbar = ({ handleLogout, userRole, isLoginPage = false }) => {
                   </svg>
                   Login
                 </button>
-                <button className="px-6 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 bg-white text-black hover:bg-gray-200">
+                <button
+                  onClick={() => navigate("/")}
+                  className="px-6 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 bg-white text-black hover:bg-gray-200"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"

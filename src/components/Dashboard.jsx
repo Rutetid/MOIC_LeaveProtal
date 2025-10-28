@@ -1,16 +1,83 @@
 import React, { useState } from "react";
 
-const Dashboard = ({ applications }) => {
+const Dashboard = ({ applications, userRole }) => {
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [activeTab, setActiveTab] = useState("all");
+
+  // Get user info based on role
+  const getUserInfo = () => {
+    const userInfo = {
+      doctor: {
+        name: "Dr. User",
+        id: "EMP999",
+        department: "General Medicine",
+      },
+      practitioner: {
+        name: "Practitioner User",
+        id: "EMP998",
+        department: "Nursing",
+      },
+      moic: { name: "MOIC User", id: "MOIC001", department: "Administration" },
+      cs: { name: "CS User", id: "CS001", department: "Administration" },
+    };
+    return (
+      userInfo[userRole] || {
+        name: "User",
+        id: "EMP000",
+        department: "General",
+      }
+    );
+  };
+
+  const currentUser = getUserInfo();
+
+  // Filter applications by tab
+  const allApplications = applications;
+  const pendingApplications = applications.filter(
+    (app) =>
+      app.status === "Pending" ||
+      app.status === "MOIC" ||
+      app.status === "Civil Surgeon" ||
+      app.status === "Health Department"
+  );
+  const acceptedApplications = applications.filter(
+    (app) => app.status === "Approved" || app.status === "Accepted"
+  );
+  const rejectedApplications = applications.filter(
+    (app) => app.status === "Rejected"
+  );
+
+  // Get current tab's applications
+  const getCurrentTabApplications = () => {
+    switch (activeTab) {
+      case "all":
+        return allApplications;
+      case "pending":
+        return pendingApplications;
+      case "accepted":
+        return acceptedApplications;
+      case "rejected":
+        return rejectedApplications;
+      default:
+        return allApplications;
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
       case "Approved":
-        return "bg-green-100 text-green-800 border-green-200";
+      case "Accepted":
+        return "bg-gray-900 text-white";
       case "Pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-gray-200 text-gray-900";
+      case "Rejected":
+        return "bg-gray-700 text-white";
+      case "Health Department":
+      case "Civil Surgeon":
+      case "MOIC":
+        return "bg-gray-600 text-white";
       default:
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -26,55 +93,117 @@ const Dashboard = ({ applications }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.map((app) => (
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-6 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+              activeTab === "all"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            All ({allApplications.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("pending")}
+            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+              activeTab === "pending"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Pending ({pendingApplications.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("accepted")}
+            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+              activeTab === "accepted"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Accepted ({acceptedApplications.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("rejected")}
+            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+              activeTab === "rejected"
+                ? "border-black text-black"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Rejected ({rejectedApplications.length})
+          </button>
+        </div>
+
+        {/* Applications List */}
+        <div className="space-y-3">
+          {getCurrentTabApplications().map((app) => (
             <div
               key={app.id}
               onClick={() => setSelectedApplication(app)}
-              className="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-gray-300"
+              className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-gray-400"
             >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                    {app.leaveType}
-                  </h3>
-                  <p className="text-sm text-gray-600 line-clamp-1">
-                    {app.subject}
-                  </p>
+              <div className="flex items-center justify-between">
+                {/* Left Section - Application Info */}
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                    {currentUser.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="font-semibold text-gray-900 text-base">
+                        {currentUser.name}
+                      </h3>
+                      <span className="text-xs text-gray-500">
+                        {currentUser.id}
+                      </span>
+                      <span className="text-xs text-gray-400">•</span>
+                      <span className="text-xs text-gray-500">
+                        {currentUser.department}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="font-medium text-gray-900">
+                        {app.leaveType}
+                      </span>
+                      <span className="text-gray-400">•</span>
+                      <span className="line-clamp-1">{app.subject}</span>
+                    </div>
+                  </div>
                 </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
-                    app.status
-                  )}`}
-                >
-                  {app.status}
-                </span>
-              </div>
 
-              {/* Date Range */}
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center text-sm text-gray-600">
-                  <svg
-                    className="w-4 h-4 mr-2 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                {/* Middle Section - Date Info */}
+                <div className="flex items-center gap-6 px-6">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1">Duration</p>
+                    <p className="font-semibold text-gray-900 text-sm">
+                      {app.fromDate} - {app.toDate}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1">Days</p>
+                    <p className="font-bold text-gray-900 text-lg">
+                      {app.numberOfDays}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Right Section - Status & Action */}
+                <div className="flex items-center gap-4">
+                  <span
+                    className={`px-4 py-1.5 rounded-md text-xs font-semibold ${getStatusColor(
+                      app.status
+                    )}`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span>
-                    {app.fromDate} - {app.toDate}
+                    {app.status}
                   </span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
                   <svg
-                    className="w-4 h-4 mr-2 text-gray-400"
+                    className="w-5 h-5 text-gray-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -83,44 +212,40 @@ const Dashboard = ({ applications }) => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M9 5l7 7-7 7"
                     />
                   </svg>
-                  <span>{app.numberOfDays} days</span>
                 </div>
-              </div>
-
-              {/* Footer */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-                <div className="text-xs text-gray-500">
-                  Submitted: {app.submittedDate}
-                </div>
-                <button className="text-blue-600 text-sm font-medium hover:text-blue-700">
-                  View Details →
-                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {applications.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
-            <svg
-              className="w-16 h-16 mx-auto text-gray-400 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            <p className="text-gray-500 text-lg mb-2">No applications yet</p>
+        {/* Empty State */}
+        {getCurrentTabApplications().length === 0 && (
+          <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <p className="text-gray-500 text-lg mb-2 font-semibold">
+              No {activeTab} applications
+            </p>
             <p className="text-gray-400 text-sm">
-              Start by applying for a leave
+              {activeTab === "all"
+                ? "Start by applying for a leave"
+                : `You don't have any ${activeTab} applications yet`}
             </p>
           </div>
         )}
@@ -175,7 +300,7 @@ const Dashboard = ({ applications }) => {
                     </p>
                   </div>
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(
+                    className={`px-4 py-2 rounded-lg text-sm font-medium ${getStatusColor(
                       selectedApplication.status
                     )}`}
                   >
@@ -283,7 +408,7 @@ const Dashboard = ({ applications }) => {
             <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end rounded-b-2xl">
               <button
                 onClick={() => setSelectedApplication(null)}
-                className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors"
               >
                 Close
               </button>

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 const Login = ({ onLogin }) => {
+  const navigate = useNavigate();
   const [showLoginForm, setShowLoginForm] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [username, setUsername] = useState("");
@@ -104,9 +106,13 @@ const Login = ({ onLogin }) => {
     setError("");
 
     if (password === "1234" && username === selectedRole.id) {
-      setTimeout(() => {
-        onLogin(selectedRole.id);
-      }, 300);
+      onLogin(selectedRole.id);
+      // Redirect based on role
+      if (selectedRole.id === "moic" || selectedRole.id === "cs") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
       setError("Invalid username or password");
     }
