@@ -421,7 +421,12 @@ const AdminPortal = ({
 
             {/* Modal Footer with Actions */}
             <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 rounded-b-2xl">
-              {selectedApplication.status === "Pending" ? (
+              {adminTab === "pending" &&
+              selectedApplication.status === "Pending" &&
+              ((userRole === "moic" &&
+                selectedApplication.currentStage === 1) ||
+                (userRole === "cs" &&
+                  selectedApplication.currentStage === 2)) ? (
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
