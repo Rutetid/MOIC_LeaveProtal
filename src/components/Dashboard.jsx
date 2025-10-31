@@ -124,7 +124,12 @@ const Dashboard = ({ applications, userRole }) => {
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                   />
                 </svg>
-                <span className="font-medium">Dashboard</span>
+                <span className="font-medium flex-1 text-left">Dashboard</span>
+                {pendingApplications.length > 0 && (
+                  <span className="px-2 py-0.5 bg-gray-700 text-white text-xs font-bold rounded-full">
+                    {pendingApplications.length}
+                  </span>
+                )}
               </button>
 
               <Link to="/apply-leave">
@@ -226,7 +231,7 @@ const Dashboard = ({ applications, userRole }) => {
         <div className="flex-1">
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              My Leave Applications
+              All Leave Applications
             </h2>
             <p className="text-gray-600">
               View and track your leave applications
