@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Dashboard = ({ applications, userRole }) => {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
+  const [activeSidebar, setActiveSidebar] = useState("dashboard");
 
-  // Get user info based on role
   const getUserInfo = () => {
     const userInfo = {
       doctor: {
@@ -31,7 +32,6 @@ const Dashboard = ({ applications, userRole }) => {
 
   const currentUser = getUserInfo();
 
-  // Filter applications by tab
   const allApplications = applications;
   const pendingApplications = applications.filter(
     (app) =>
@@ -47,7 +47,6 @@ const Dashboard = ({ applications, userRole }) => {
     (app) => app.status === "Rejected"
   );
 
-  // Get current tab's applications
   const getCurrentTabApplications = () => {
     switch (activeTab) {
       case "all":
@@ -83,127 +82,55 @@ const Dashboard = ({ applications, userRole }) => {
 
   return (
     <>
-      <div>
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            My Leave Applications
-          </h2>
-          <p className="text-gray-600">
-            View and track your leave applications
-          </p>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="flex gap-4 mb-6 border-b border-gray-200">
-          <button
-            onClick={() => setActiveTab("all")}
-            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
-              activeTab === "all"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            All ({allApplications.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("pending")}
-            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
-              activeTab === "pending"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Pending ({pendingApplications.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("accepted")}
-            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
-              activeTab === "accepted"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Accepted ({acceptedApplications.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("rejected")}
-            className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
-              activeTab === "rejected"
-                ? "border-black text-black"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Rejected ({rejectedApplications.length})
-          </button>
-        </div>
-
-        {/* Applications List */}
-        <div className="space-y-3">
-          {getCurrentTabApplications().map((app) => (
-            <div
-              key={app.id}
-              onClick={() => setSelectedApplication(app)}
-              className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-gray-400"
-            >
-              <div className="flex items-center justify-between">
-                {/* Left Section - Application Info */}
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                    {currentUser.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-1">
-                      <h3 className="font-semibold text-gray-900 text-base">
-                        {currentUser.name}
-                      </h3>
-                      <span className="text-xs text-gray-500">
-                        {currentUser.id}
-                      </span>
-                      <span className="text-xs text-gray-400">•</span>
-                      <span className="text-xs text-gray-500">
-                        {currentUser.department}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <span className="font-medium text-gray-900">
-                        {app.leaveType}
-                      </span>
-                      <span className="text-gray-400">•</span>
-                      <span className="line-clamp-1">{app.subject}</span>
-                    </div>
-                  </div>
+      <div className="flex gap-6">
+        <div className="w-64 flex-shrink-0">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-32">
+            <div className="mb-6 pb-4 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                  {currentUser.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")}
                 </div>
-
-                {/* Middle Section - Date Info */}
-                <div className="flex items-center gap-6 px-6">
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-1">Duration</p>
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {app.fromDate} - {app.toDate}
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-1">Days</p>
-                    <p className="font-bold text-gray-900 text-lg">
-                      {app.numberOfDays}
-                    </p>
-                  </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 text-sm">
+                    {currentUser.name}
+                  </h3>
+                  <p className="text-xs text-gray-500">{currentUser.id}</p>
                 </div>
+              </div>
+            </div>
 
-                {/* Right Section - Status & Action */}
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`px-4 py-1.5 rounded-md text-xs font-semibold ${getStatusColor(
-                      app.status
-                    )}`}
-                  >
-                    {app.status}
-                  </span>
+            <nav className="space-y-1">
+              <button
+                onClick={() => setActiveSidebar("dashboard")}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeSidebar === "dashboard"
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+                <span className="font-medium">Dashboard</span>
+              </button>
+
+              <Link to="/apply-leave">
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -212,46 +139,258 @@ const Dashboard = ({ applications, userRole }) => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M9 5l7 7-7 7"
+                      d="M12 4v16m8-8H4"
                     />
                   </svg>
+                  <span className="font-medium">Apply Leave</span>
+                </button>
+              </Link>
+
+              <button
+                onClick={() => setActiveSidebar("statistics")}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeSidebar === "statistics"
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+                <span className="font-medium">Statistics</span>
+              </button>
+
+              <button
+                onClick={() => setActiveSidebar("profile")}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeSidebar === "profile"
+                    ? "bg-gray-900 text-white"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                <span className="font-medium">Profile</span>
+              </button>
+            </nav>
+
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                <p className="text-xs text-gray-500 mb-1">Quick Stats</p>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-600">Total</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {allApplications.length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-600">Pending</span>
+                    <span className="text-sm font-bold text-gray-600">
+                      {pendingApplications.length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-600">Accepted</span>
+                    <span className="text-sm font-bold text-gray-900">
+                      {acceptedApplications.length}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* Empty State */}
-        {getCurrentTabApplications().length === 0 && (
-          <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
-              <svg
-                className="w-8 h-8 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <p className="text-gray-500 text-lg mb-2 font-semibold">
-              No {activeTab} applications
-            </p>
-            <p className="text-gray-400 text-sm">
-              {activeTab === "all"
-                ? "Start by applying for a leave"
-                : `You don't have any ${activeTab} applications yet`}
+        <div className="flex-1">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              My Leave Applications
+            </h2>
+            <p className="text-gray-600">
+              View and track your leave applications
             </p>
           </div>
-        )}
+
+          <div className="flex gap-4 mb-6 border-b border-gray-200">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+                activeTab === "all"
+                  ? "border-black text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              All ({allApplications.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("pending")}
+              className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+                activeTab === "pending"
+                  ? "border-black text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Pending ({pendingApplications.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("accepted")}
+              className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+                activeTab === "accepted"
+                  ? "border-black text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Accepted ({acceptedApplications.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("rejected")}
+              className={`px-6 py-3 font-semibold transition-all duration-200 border-b-2 ${
+                activeTab === "rejected"
+                  ? "border-black text-black"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              Rejected ({rejectedApplications.length})
+            </button>
+          </div>
+
+          {/* Applications List */}
+          <div className="space-y-3">
+            {getCurrentTabApplications().map((app) => (
+              <div
+                key={app.id}
+                onClick={() => setSelectedApplication(app)}
+                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-gray-400"
+              >
+                <div className="flex items-center justify-between">
+                  {/* Left Section - Application Info */}
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                      {currentUser.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="font-semibold text-gray-900 text-base">
+                          {currentUser.name}
+                        </h3>
+                        <span className="text-xs text-gray-500">
+                          {currentUser.id}
+                        </span>
+                        <span className="text-xs text-gray-400">•</span>
+                        <span className="text-xs text-gray-500">
+                          {currentUser.department}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <span className="font-medium text-gray-900">
+                          {app.leaveType}
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span className="line-clamp-1">{app.subject}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Middle Section - Date Info */}
+                  <div className="flex items-center gap-6 px-6">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Duration</p>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        {app.fromDate} - {app.toDate}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Days</p>
+                      <p className="font-bold text-gray-900 text-lg">
+                        {app.numberOfDays}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Section - Status & Action */}
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`px-4 py-1.5 rounded-md text-xs font-semibold ${getStatusColor(
+                        app.status
+                      )}`}
+                    >
+                      {app.status}
+                    </span>
+                    <svg
+                      className="w-5 h-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {getCurrentTabApplications().length === 0 && (
+            <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-500 text-lg mb-2 font-semibold">
+                No {activeTab} applications
+              </p>
+              <p className="text-gray-400 text-sm">
+                {activeTab === "all"
+                  ? "Start by applying for a leave"
+                  : `You don't have any ${activeTab} applications yet`}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Modal */}
       {selectedApplication && (
         <div
           className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50"
