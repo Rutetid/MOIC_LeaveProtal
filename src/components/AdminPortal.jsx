@@ -19,6 +19,22 @@ const AdminPortal = ({
       ? "Review and approve applications before Civil Surgeon"
       : "Review applications approved by MOIC";
 
+  const getUserInfo = () => {
+    const userInfo = {
+      moic: { name: "MOIC User", id: "MOIC001", department: "Administration" },
+      cs: { name: "CS User", id: "CS001", department: "Administration" },
+    };
+    return (
+      userInfo[userRole] || {
+        name: "Admin User",
+        id: "ADMIN001",
+        department: "Administration",
+      }
+    );
+  };
+
+  const currentUser = getUserInfo();
+
   // Filter applications based on role and status
   const pendingApplications = allApplications.filter((app) => {
     if (userRole === "moic") {
@@ -61,20 +77,37 @@ const AdminPortal = ({
     }
   };
 
-  // Get current tab's applications
   const getCurrentTabApplications = () => {
+    let apps = [];
     switch (adminTab) {
       case "pending":
-        return pendingApplications;
+        apps = pendingApplications;
+        break;
       case "accepted":
-        return acceptedApplications;
+        apps = acceptedApplications;
+        break;
       case "rejected":
-        return rejectedApplications;
+        apps = rejectedApplications;
+        break;
       case "archived":
-        return archivedApplications;
+        apps = archivedApplications;
+        break;
       default:
-        return [];
+        apps = [];
     }
+    
+    if (searchQuery.trim() === "") {
+      return apps;
+    }
+    
+    return apps.filter(
+      (app) =>
+        app.employeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.leaveType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.department.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   };
 
   return (
@@ -300,6 +333,45 @@ const AdminPortal = ({
                       </div>
                     </div>
                   </div>
+          {/* Applications List */}
+          <div className="space-y-3">
+            {getCurrentTabApplications().map((app) => (
+              <div
+                key={app.id}
+                onClick={() => setSelectedApplication(app)}
+                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-gray-400"
+              >
+                <div className="flex items-center justify-between">
+                  {/* Left Section - Employee Info */}
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                      {app.employeeName
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="font-semibold text-gray-900 text-base">
+                          {app.employeeName}
+                        </h3>
+                        <span className="text-xs text-gray-500">
+                          {app.employeeId}
+                        </span>
+                        <span className="text-xs text-gray-400">•</span>
+                        <span className="text-xs text-gray-500">
+                          {app.department}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <span className="font-medium text-gray-900">
+                          {app.leaveType}
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span className="line-clamp-1">{app.subject}</span>
+                      </div>
+                    </div>
+                  </div>
 
                   {/* Middle Section - Date Info */}
                   <div className="flex items-center gap-6 px-6">
@@ -316,7 +388,49 @@ const AdminPortal = ({
                       </p>
                     </div>
                   </div>
+                  {/* Middle Section - Date Info */}
+                  <div className="flex items-center gap-6 px-6">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Duration</p>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        {app.fromDate} - {app.toDate}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Days</p>
+                      <p className="font-bold text-gray-900 text-lg">
+                        {app.numberOfDays}
+                      </p>
+                    </div>
+                  </div>
 
+                  {/* Right Section - Status & Action */}
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`px-4 py-1.5 rounded-md text-xs font-semibold ${getStatusColor(
+                        app.status
+                      )}`}
+                    >
+                      {app.status}
+                    </span>
+                    <svg
+                      className="w-5 h-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
                   {/* Right Section - Status & Action */}
                   <div className="flex items-center gap-4">
                     <span
@@ -378,9 +492,41 @@ const AdminPortal = ({
             </div>
           )}
         </div>
+          {/* Empty State */}
+          {getCurrentTabApplications().length === 0 && (
+            <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-900 text-lg font-semibold mb-1">
+                No applications found
+              </p>
+              <p className="text-gray-500 text-sm">
+                {adminTab === "pending"
+                  ? "All applications have been processed"
+                  : adminTab === "accepted"
+                  ? "No accepted applications yet"
+                  : adminTab === "rejected"
+                  ? "No rejected applications yet"
+                  : "No archived applications yet"}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Modal */}
       {selectedApplication && (
         <div
           className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center p-4 z-50"
