@@ -476,7 +476,10 @@ const App = () => {
                     <div className="py-12 px-4 sm:px-6 lg:px-8 pt-28 mt-1">
                       <div className="max-w-7xl mx-auto">
                         {userRole === "moic" || userRole === "cs" ? (
-                          <Navigate to="/admin" replace />
+                          <Navigate
+                            to={userRole === "moic" ? "/moic" : "/cs"}
+                            replace
+                          />
                         ) : (
                           <Dashboard
                             applications={applications}
@@ -512,13 +515,13 @@ const App = () => {
 
               {/* Admin Routes */}
               <Route
-                path="/admin"
+                path="/moic"
                 element={
                   <>
                     <Navbar handleLogout={handleLogout} userRole={userRole} />
                     <div className="py-12 px-4 sm:px-6 lg:px-8 pt-28 mt-1">
                       <div className="max-w-7xl mx-auto">
-                        {userRole === "moic" || userRole === "cs" ? (
+                        {userRole === "moic" ? (
                           <AdminPortal
                             adminTab={adminTab}
                             setAdminTab={setAdminTab}
@@ -528,7 +531,37 @@ const App = () => {
                             userRole={userRole}
                           />
                         ) : (
-                          <Navigate to="/dashboard" replace />
+                          <Navigate
+                            to={userRole === "cs" ? "/cs" : "/dashboard"}
+                            replace
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </>
+                }
+              />
+              <Route
+                path="/cs"
+                element={
+                  <>
+                    <Navbar handleLogout={handleLogout} userRole={userRole} />
+                    <div className="py-12 px-4 sm:px-6 lg:px-8 pt-28 mt-1">
+                      <div className="max-w-7xl mx-auto">
+                        {userRole === "cs" ? (
+                          <AdminPortal
+                            adminTab={adminTab}
+                            setAdminTab={setAdminTab}
+                            allApplications={allApplications}
+                            handleApprove={handleApprove}
+                            handleReject={handleReject}
+                            userRole={userRole}
+                          />
+                        ) : (
+                          <Navigate
+                            to={userRole === "moic" ? "/moic" : "/dashboard"}
+                            replace
+                          />
                         )}
                       </div>
                     </div>
@@ -547,7 +580,8 @@ const App = () => {
                 path="/apply-leave"
                 element={<Navigate to="/login" replace />}
               />
-              <Route path="/admin" element={<Navigate to="/login" replace />} />
+              <Route path="/moic" element={<Navigate to="/login" replace />} />
+              <Route path="/cs" element={<Navigate to="/login" replace />} />
             </>
           )}
 
@@ -556,8 +590,10 @@ const App = () => {
             path="*"
             element={
               isLoggedIn ? (
-                userRole === "moic" || userRole === "cs" ? (
-                  <Navigate to="/admin" replace />
+                userRole === "moic" ? (
+                  <Navigate to="/moic" replace />
+                ) : userRole === "cs" ? (
+                  <Navigate to="/cs" replace />
                 ) : (
                   <Navigate to="/dashboard" replace />
                 )

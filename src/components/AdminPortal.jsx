@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Sidebar from "./Sidebar";
 
 const AdminPortal = ({
   adminTab,
@@ -10,7 +11,6 @@ const AdminPortal = ({
 }) => {
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [activeSidebar, setActiveSidebar] = useState("dashboard");
-  const [searchQuery, setSearchQuery] = useState("");
 
   const portalTitle =
     userRole === "moic" ? "MOIC Portal" : "Civil Surgeon Portal";
@@ -113,34 +113,18 @@ const AdminPortal = ({
   return (
     <>
       <div className="flex gap-6">
-        <div className="w-64 flex-shrink-0">
-          <div className="bg-white rounded-lg border border-gray-200 p-4 sticky top-32">
-            <div className="mb-6 pb-4 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                  {currentUser.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-sm">
-                    {currentUser.name}
-                  </h3>
-                  <p className="text-xs text-gray-500">{currentUser.id}</p>
-                </div>
-              </div>
-            </div>
-
-            <nav className="space-y-1">
-              <button
-                onClick={() => setActiveSidebar("dashboard")}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeSidebar === "dashboard"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
+        <Sidebar
+          userInfo={{
+            name: userRole === "moic" ? "MOIC User" : "CS User",
+            id: userRole === "moic" ? "MOIC001" : "CS001",
+          }}
+          activeSidebar={activeSidebar}
+          setActiveSidebar={setActiveSidebar}
+          navigationItems={[
+            {
+              id: "dashboard",
+              label: "Dashboard",
+              icon: (
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -154,17 +138,17 @@ const AdminPortal = ({
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                   />
                 </svg>
-                <span className="font-medium">Dashboard</span>
-              </button>
-
-              <button
-                onClick={() => setActiveSidebar("analytics")}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeSidebar === "analytics"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
+              ),
+              onClick: setActiveSidebar,
+              badge:
+                pendingApplications.length > 0
+                  ? pendingApplications.length
+                  : null,
+            },
+            {
+              id: "analytics",
+              label: "Analytics",
+              icon: (
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -178,17 +162,13 @@ const AdminPortal = ({
                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                   />
                 </svg>
-                <span className="font-medium">Analytics</span>
-              </button>
-
-              <button
-                onClick={() => setActiveSidebar("reports")}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeSidebar === "reports"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
+              ),
+              onClick: setActiveSidebar,
+            },
+            {
+              id: "reports",
+              label: "Reports",
+              icon: (
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -199,20 +179,16 @@ const AdminPortal = ({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <span className="font-medium">Reports</span>
-              </button>
-
-              <button
-                onClick={() => setActiveSidebar("settings")}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeSidebar === "settings"
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
+              ),
+              onClick: setActiveSidebar,
+            },
+            {
+              id: "settings",
+              label: "Settings",
+              icon: (
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -232,43 +208,39 @@ const AdminPortal = ({
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span className="font-medium">Settings</span>
-              </button>
-            </nav>
+              ),
+              onClick: setActiveSidebar,
+            },
+          ]}
+          statsItems={[
+            {
+              label: "Total",
+              value: allApplications.length,
+              className: "text-gray-900",
+            },
 
-            <div className="mt-6 pt-4 border-t border-gray-200">
-              <div className="px-4 py-3 bg-gray-50 rounded-lg">
-                <p className="text-xs text-gray-500 mb-1">Application Stats</p>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">Pending</span>
-                    <span className="text-sm font-bold text-gray-900">
-                      {pendingApplications.length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">Accepted</span>
-                    <span className="text-sm font-bold text-gray-900">
-                      {acceptedApplications.length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">Rejected</span>
-                    <span className="text-sm font-bold text-gray-700">
-                      {rejectedApplications.length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-600">Archived</span>
-                    <span className="text-sm font-bold text-gray-900">
-                      {archivedApplications.length}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            {
+              label: "Pending",
+              value: pendingApplications.length,
+              className: "text-gray-600",
+            },
+            // {
+            //   label: "Accepted",
+            //   value: acceptedApplications.length,
+            //   className: "text-gray-900",
+            // },
+            // {
+            //   label: "Rejected",
+            //   value: rejectedApplications.length,
+            //   className: "text-gray-700",
+            // },
+            // {
+            //   label: "Archived",
+            //   value: archivedApplications.length,
+            //   className: "text-gray-900",
+            // },
+          ]}
+        />
 
         <div className="flex-1">
           <div className="mb-8">
@@ -278,39 +250,7 @@ const AdminPortal = ({
             <p className="text-gray-600">{portalDescription}</p>
           </div>
 
-          <div className="mb-6">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by name, ID, leave type, subject, or department..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-24 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              />
-              <svg
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 px-3 py-1 text-xs font-medium text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          </div>
-
+          {/* Tab Navigation */}
           <div className="flex gap-4 mb-6 border-b border-gray-200">
             <button
               onClick={() => setAdminTab("pending")}
@@ -393,7 +333,61 @@ const AdminPortal = ({
                       </div>
                     </div>
                   </div>
+          {/* Applications List */}
+          <div className="space-y-3">
+            {getCurrentTabApplications().map((app) => (
+              <div
+                key={app.id}
+                onClick={() => setSelectedApplication(app)}
+                className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:border-gray-400"
+              >
+                <div className="flex items-center justify-between">
+                  {/* Left Section - Employee Info */}
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-12 h-12 bg-gray-900 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                      {app.employeeName
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="font-semibold text-gray-900 text-base">
+                          {app.employeeName}
+                        </h3>
+                        <span className="text-xs text-gray-500">
+                          {app.employeeId}
+                        </span>
+                        <span className="text-xs text-gray-400">•</span>
+                        <span className="text-xs text-gray-500">
+                          {app.department}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <span className="font-medium text-gray-900">
+                          {app.leaveType}
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span className="line-clamp-1">{app.subject}</span>
+                      </div>
+                    </div>
+                  </div>
 
+                  {/* Middle Section - Date Info */}
+                  <div className="flex items-center gap-6 px-6">
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Duration</p>
+                      <p className="font-semibold text-gray-900 text-sm">
+                        {app.fromDate} - {app.toDate}
+                      </p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs text-gray-500 mb-1">Days</p>
+                      <p className="font-bold text-gray-900 text-lg">
+                        {app.numberOfDays}
+                      </p>
+                    </div>
+                  </div>
                   {/* Middle Section - Date Info */}
                   <div className="flex items-center gap-6 px-6">
                     <div className="text-center">
@@ -437,7 +431,67 @@ const AdminPortal = ({
               </div>
             ))}
           </div>
+                  {/* Right Section - Status & Action */}
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`px-4 py-1.5 rounded-md text-xs font-semibold ${getStatusColor(
+                        app.status
+                      )}`}
+                    >
+                      {app.status}
+                    </span>
+                    <svg
+                      className="w-5 h-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
+          {/* Empty State */}
+          {getCurrentTabApplications().length === 0 && (
+            <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
+              <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+                <svg
+                  className="w-8 h-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-900 text-lg font-semibold mb-1">
+                No applications found
+              </p>
+              <p className="text-gray-500 text-sm">
+                {adminTab === "pending"
+                  ? "All applications have been processed"
+                  : adminTab === "accepted"
+                  ? "No accepted applications yet"
+                  : adminTab === "rejected"
+                  ? "No rejected applications yet"
+                  : "No archived applications yet"}
+              </p>
+            </div>
+          )}
+        </div>
           {/* Empty State */}
           {getCurrentTabApplications().length === 0 && (
             <div className="text-center py-16 bg-white rounded-lg border border-gray-200">
