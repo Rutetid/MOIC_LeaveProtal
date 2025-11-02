@@ -525,7 +525,6 @@ const AdminPortal = ({
             </div>
           )}
         </div>
-      </div>
 
       {selectedApplication && (
         <div
